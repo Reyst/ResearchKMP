@@ -1,4 +1,6 @@
-package com.github.reyst.kmp
+package com.github.reyst.kmp.ui
+
+import com.github.reyst.kmp.getPlatform
 
 class Greeting {
     private val platform = getPlatform()

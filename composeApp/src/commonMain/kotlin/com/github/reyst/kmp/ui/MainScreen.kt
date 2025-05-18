@@ -1,4 +1,4 @@
-package com.github.reyst.kmp
+package com.github.reyst.kmp.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -14,13 +14,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
+import org.koin.compose.viewmodel.koinViewModel
 import researchkmp.composeapp.generated.resources.Res
 import researchkmp.composeapp.generated.resources.compose_multiplatform
 
 @Composable
+fun MainScreen() {
+    val viewModel: MainScreenViewModel = koinViewModel()
+    val uiState = viewModel.uiState.collectAsState()
+    MainScreen(uiState.value
+    )
+}
+
+@Composable
 @Preview
-fun App() {
+fun MainScreen(uiState: UiState) {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
@@ -29,14 +37,20 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
+            Button(
+                onClick = {
+                    showContent = !showContent
+                    if (showContent) uiState.fetchData()
+                }
+            ) { Text("Click me!") }
             AnimatedVisibility(showContent) {
                 val greeting = remember { Greeting().greet() }
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+                    Text("Compose: $greeting. ${uiState.text}")
                 }
             }
         }
